@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val itemInterface by lazy { createService() }
 
     private fun createService(): ItemInterface {
-        val baseApiUrl = "https://raw.githubusercontent.com/"
+        val baseApiUrl = "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/"
 
         val httpLogging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         val httpClientBuilder = OkHttpClient.Builder().addInterceptor(httpLogging)
