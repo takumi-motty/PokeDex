@@ -2,6 +2,7 @@ package com.example.motty.pokedex
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.motty.pokedex.model.Pokemon
 import com.example.motty.pokedex.model.PokemonList
 import okhttp3.OkHttpClient
+import okhttp3.internal.notify
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Url
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +25,12 @@ class MainActivity : AppCompatActivity() {
     private val itemInterface by lazy { createService() }
 
     private fun createService(): ItemInterface {
-        val baseApiUrl = "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/"
+
+        return goRetrofit("https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/").create(ItemInterface::class.java)
+    }
+
+    fun goRetrofit(baseUrl: String?): Retrofit {
+        val baseApiUrl = baseUrl
 
         val httpLogging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         val httpClientBuilder = OkHttpClient.Builder().addInterceptor(httpLogging)
@@ -33,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             .client(httpClientBuilder.build())
             .build()
 
-        return retrofit.create(ItemInterface::class.java)
+        return retrofit
     }
 
     fun getRanking(v: View){
