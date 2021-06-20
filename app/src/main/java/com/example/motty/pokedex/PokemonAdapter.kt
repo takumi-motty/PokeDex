@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.LayoutInflater.from
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.motty.pokedex.model.Pokemon
 import com.squareup.picasso.Picasso
@@ -16,6 +17,17 @@ class PokemonAdapter(private val context: Context, private val itemList: List<Po
         val pokemonNumberView: TextView = view.findViewById(R.id.PokemonNumber)
         val pokemonImageView: ImageView = view.findViewById(R.id.PokemonImage)
         val pokemonNameTextView: TextView = view.findViewById(R.id.PokemonName)
+        val pokemonItem: ConstraintLayout = view.findViewById(R.id.PokemonItem)
+    }
+
+    private lateinit var listener: OnPokemonClickListener
+
+    interface OnPokemonClickListener {
+        fun onItemClick(pokemon: Pokemon)
+    }
+
+    fun setOnPokemonClickListener(listener: OnPokemonClickListener){
+        this.listener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder =
@@ -23,7 +35,10 @@ class PokemonAdapter(private val context: Context, private val itemList: List<Po
 
     override fun getItemCount(): Int = itemList.size
 
+    // セルに表示するデータを用意
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+
+        val item = itemList[position]
         holder.pokemonNumberView.text = (position+1).toString()
         Picasso.get()
             .load(itemList[position].img)
@@ -32,6 +47,10 @@ class PokemonAdapter(private val context: Context, private val itemList: List<Po
             .into(holder.pokemonImageView)
 
         holder.pokemonNameTextView.text = itemList[position].name
+
+        holder.pokemonItem.setOnClickListener{
+            listener.onItemClick(item)
+        }
     }
 
 }
